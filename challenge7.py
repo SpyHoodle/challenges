@@ -2,31 +2,44 @@ from random import randint
 from time import sleep
 
 
+# Define colour codes
+colours = {
+    "red": "\033[31m",
+    "green": "\033[32m",
+    "yellow": "\033[33m",
+    "blue": "\033[34m",
+    "magenta": "\033[35m",
+    "cyan": "\033[36m",
+    "white": "\033[37m",
+    "clear": "\033[0m"
+}
+
+
 def reward(numbers, credit):
     # Check for two skull symbols
     if numbers[0] == numbers[1] == 5 or numbers[0] == numbers[2] == 5 or numbers[1] == numbers[2] == 5:
-        print("You lost £1!")
+        print(f"{colours['red']}You lost £1!{colours['clear']}")
         credit -= 1.00
 
     # Check for 3 skull symbols
     elif numbers[0] == numbers[1] == numbers[2] == 5:
-        print(f"You lost all of your money!")
+        print(f"{colours['red']}You lost all of your money!{colours['clear']}")
         credit = 0
-
-    # Check for 2 of the same symbol
-    if numbers[0] == numbers[1] or numbers[0] == numbers[2] or numbers[1] == numbers[2]:
-        print("You won 50p!")
-        credit += 0.50
-
-    # Check for 3 of the same symbol
-    elif numbers[0] == numbers[1] == numbers[2]:
-        print("You won £1!")
-        credit += 1.00
 
     # Check for 3 bell symbols
     elif numbers[0] == numbers[1] == numbers[2] == 1:
-        print("You won £5!")
+        print(f"{colours['green']}You won £5!{colours['clear']}")
         credit += 10.00
+
+    # Check for 3 of the same symbol
+    elif numbers[0] == numbers[1] == numbers[2]:
+        print(f"{colours['green']}You won £1!{colours['clear']}")
+        credit += 1.00
+
+    # Check for 2 of the same symbol
+    elif numbers[0] == numbers[1] or numbers[0] == numbers[2] or numbers[1] == numbers[2]:
+        print(f"{colours['green']}You won 50p!{colours['clear']}")
+        credit += 0.50
 
     # Otherwise, the player doesn't win or loose
     else:
@@ -36,11 +49,14 @@ def reward(numbers, credit):
 
 
 def roll(symbols, credit):
+    # Print the title
+    print(f"\n{colours['magenta']}🎰 Slot machine! 🎰{colours['clear']}")
+
     # Press enter to roll
-    input("\nPress enter to insert 20p.")
+    input(f"{colours['cyan']}Press enter to insert 20p.{colours['clear']}")
 
     # Subtract 20p from the credit
-    print("20p inserted...")
+    print(f"{colours['blue']}20p inserted...{colours['clear']}")
     credit -= 0.20
 
     # Generate 3 random integers from 0 to 5
@@ -65,16 +81,16 @@ def turn(symbols, credit):
     # Check if the player has any money left
     if credit >= 0.20:
         # Ask the player if they want to play again
-        print(f"\nYou have £{credit} left.")
-        play_again = input("Do you want to play again? (y/N): ").upper()
+        print(f"\n{colours['blue']}You have £{credit:.2f} left.")
+        play_again = input(f"{colours['cyan']}Do you want to play again? (Y/n): ").upper()
 
         # If they say yes, run another turn
-        if play_again == "Y" or play_again == "YES":
-            turn(symbols, credit)
+        if play_again == "N" or play_again == "NO":
+            return credit
 
         # If they say no, end the game
         else:
-            return credit
+            turn(symbols, credit)
 
     # If the player doesn't have enough money, end the game
     else:
@@ -85,10 +101,10 @@ def play(symbols, credit):
     credit = turn(symbols, credit)
 
     if credit:
-        print(f"Thanks for playing! You have £{credit} left.")
+        print(f"{colours['magenta']}Thanks for playing! You have £{credit:.2f} left.{colours['clear']}")
 
     elif not credit:
-        print("You do not have enough credit to play.")
+        print(f"{colours['red']}You do not have enough credit to play.{colours['clear']}")
 
 
 def main():
