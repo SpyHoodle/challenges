@@ -10,21 +10,18 @@ def is_happy_number(num):
             return False
         else:
             history.add(num)
-
     return True
 
 
 def main():
     num = 0
     happy_nums = []
-
     while len(happy_nums) < 8:
         is_happy = is_happy_number(num)
-
         if is_happy:
             happy_nums.append(num)
-
         num += 1
+
     print(f"First {num} happy numbers:", happy_nums)
 
 
