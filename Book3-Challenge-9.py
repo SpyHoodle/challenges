@@ -20,7 +20,7 @@ def luhn_algorithm(number: str) -> bool:
     # Calculate if it is valid or not
     valid = (sum(payload) % 10)
     match valid:
-        case 1:
+        case 0:
             valid = True
         case _:
             valid = False
