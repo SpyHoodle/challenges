@@ -7,8 +7,8 @@ def denary_to_binary(denary: int) -> int:
     return binary
 
 
-def binary_to_denary(binary: int, abd_mode: bool = True) -> int:
-    if abd_mode:
+def binary_to_denary(binary: int, abid_mode: bool = True) -> int:
+    if abid_mode:
         denary = 0
         for i, digit in enumerate(str(binary)[::-1]):
             denary += int(digit) * 2 ** i
