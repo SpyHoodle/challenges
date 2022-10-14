@@ -1,5 +1,6 @@
 import threading
 
+
 def next_num(num: int) -> int:
     return num + sum(int(i) for i in str(num))
 
