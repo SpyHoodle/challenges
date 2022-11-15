@@ -1,29 +1,17 @@
 use std::io::{self, Write};
-use std::collections::HashMap;
 
-enum Months {
-    January,
-    February,
-    March,
-    April,
-    May,
-    June,
-    July,
-    August,
-    September,
-    October,
-    November,
-    December,
+struct Date {
+    year: usize,
+    month: usize,
+    day: usize,
 }
 
-enum Date {
-    Year,
-    Month,
-    Day
-}
-
-fn incorrect_format() {
-    println!("Error: Please enter in the format YYYY-MM-DD")
+fn print_result(result: bool) {
+    if result {
+        println!("The date is valid!")
+    } else {
+        println!("The date is invalid!")
+    }
 }
 
 fn is_leap(year: usize) -> bool {
@@ -33,56 +21,59 @@ fn is_leap(year: usize) -> bool {
         true
     } else {
         false
-    };
+    }
 }
 
-fn valid(date: Vec<usize>) -> bool {
-    if date.len() != 3 {
-        incorrect_format()
+fn valid(date: Date) -> bool {
+    let mut days_in_months: [usize; 12] = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ];
+
+    if is_leap(date.year) { days_in_months[1] = 29; };
+
+    if date.month > 12 || date.month < 1 {
+        println!("Error: Months cannot be greater than 12 (December) or less than 01 (January).");
         return false;
-    } else if date[Date::Year].len() != 4 || date[Date::Month].len() != 2 || data[Date::Day].len() != 2 {
-        incorrect_format()
+    } else if date.day > days_in_months[date.month - 1] {
+        println!("Error: There are not enough days in the month for day {}.", date.day);
         return false;
-    } else {
-        let days_in_months = HashMap::from([
-            (Months::January,   31),
-            (Months::February,  28),
-            (Months::March,     31),
-            (Months::April,     30),
-            (Months::May,       31),
-            (Months::June,      30),
-            (Months::July,      31),
-            (Months::August,    31),
-            (Months::September, 30),
-            (Months::October,   31),
-            (Months::November,  30),
-            (Months::December,  31),
-        ]);
+    } else if date.day < 1 {
+        println!("Error: The day cannot be less than 01.");
+        return false;
+    };
 
-        if is_leap(date[Date::Year]) {
-            let feb = days_in_months.entry(Months::Februrary).and_modify(|feb| *feb = 29).or_insert(29);
-        };
+    return true;
+}
 
-        if date[Date::Month].parse::<usize>().unwrap() > 12
-
-        return true;
+fn valid_format(date: &Vec<&str>) -> bool {
+    if date[0].len() != 4 || date[1].len() != 2 || date[2].len() != 2 { 
+        println!("Error: Date is not in the format YYYY-MM-DD.");
+        false 
+    } else { 
+        true 
     }
 }
 
 fn main() {
+    println!("--- Date Validator ---");
     print!("Enter a date in the format YYYY-MM-DD: ");
-    let _ = io::stdout().flush();
+    io::stdout().flush().unwrap();
     let mut buffer = String::new();
     io::stdin()
         .read_line(&mut buffer)
         .unwrap();
 
     let date: Vec<&str> = buffer.trim_end().split("-").collect();
-    let result = valid(date);
+    let result = valid_format(&date);
 
     if result {
-        println!("Valid!");
+        let date = Date {
+            year: date[0].parse().unwrap(),
+            month: date[1].parse().unwrap(),
+            day: date[2].parse().unwrap(),
+        };
+    
+        let result = valid(date);
+        print_result(result);
     } else {
-        println!("Invalid!");
+        print_result(result);
     };
 }
