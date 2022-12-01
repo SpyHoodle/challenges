@@ -1,8 +1,4 @@
-class Colors:
-    grey = "\033[0;37m"
-    red = "\033[0;31m"
-    lightYellow = "\033[1;33m"
-    end = "\033[0m"
+import colors as c
 
 
 class Node:
@@ -16,19 +12,22 @@ class LinkedList:
         self.nodes: list[Node] = []
         self.head: Node | None = None
 
-    @staticmethod
-    def _fatal(msg: str) -> None:
-        print(f"{Colors.red}Error: {Colors.lightYellow}{msg}!{Colors.end}")
-        exit(1)
-
     def __repr__(self):
         node = self.head
-        linked_list = "["
+        linked_list = f"{c.cyan}LinkedList{c.blue}({c.end}"
         while node:
-            linked_list += f"{node.data} -> "
+            linked_list += f"{node.data} {c.green}->{c.end} "
             node = node.next
-        linked_list += f"{Colors.grey}None{Colors.end}]"
+        linked_list += f"{c.grey}None{c.blue}){c.end}"
         return linked_list
+
+    def __len__(self):
+        return len(self.nodes) + 1
+
+    @staticmethod
+    def _fatal(msg: str) -> None:
+        print(f"{c.red}Error: {c.lightYellow}{msg}!{c.end}")
+        exit(1)
 
     def add(self, new_node: Node):
         if new_node.next == self.head:
@@ -47,20 +46,23 @@ class LinkedList:
         else:
             self._fatal(f"Failed to add node '{new_node.data}' as next node '{new_node.next.data}' does not exist")
 
-    def delete(self, del_node: Node):
+    def remove(self, del_node: Node):
         if del_node in self.nodes:
             index = self.nodes.index(del_node)
             if self.nodes[index] == self.head:
                 self.head = self.head.next
             else:
-                self.nodes[self.nodes.index(self.node_at_index(self.index_of_node(del_node) - 1))].next = del_node.next
+                self.nodes[self.nodes.index(self.node(self.index(del_node) - 1))].next = del_node.next
             self.nodes.pop(index)
         else:
             self._fatal(f"Failed to delete node '{del_node.data}' as it was not found in the linked list")
 
-    def node_at_index(self, index: int):
+    def pop(self, del_node_index: int):
+        self.remove(self.node(del_node_index))
+
+    def node(self, index: int):
         if index < 0 or index > len(self.nodes) - 1:
-            self._fatal(f"Index '{index}' out of range")
+            self._fatal(f"Failed to find note at index '{index}' as it is out of range")
         node = self.head
         count = 0
         while node:
@@ -70,7 +72,7 @@ class LinkedList:
                 node = node.next
             count += 1
 
-    def index_of_node(self, find_node: Node):
+    def index(self, find_node: Node):
         if find_node in self.nodes:
             node = self.head
             count = 0
@@ -83,15 +85,13 @@ class LinkedList:
         else:
             self._fatal(f"Failed to find index of node {find_node.data} as it does not exist within the linked list")
 
+    def swap(self, node1: Node, node2: Node):
+        if node1 in self.nodes and node2 in self.nodes:
+            self.nodes[self.nodes.index(node1)].data, self.nodes[self.nodes.index(node2)].data = node2.data, node1.data
 
-ll = LinkedList()
-ll.add(Node("HewwoEvie:3", None))
-print(ll)
-ll.add(Node("DogsDinner!!", ll.node_at_index(0)))
-print(ll)
-ll.add(Node("CatsBreakfast!!!", ll.node_at_index(1)))
-print(ll)
-ll.delete(ll.node_at_index(1))
-print(ll)
-ll.delete(ll.node_at_index(0))
-print(ll)
+        else:
+            self._fatal(f"Failed to swap nodes '{node1.data}' and '{node2.data}' "
+                        f"as one or both of them do not exist within the linked list")
+
+    def swap_index(self, index1: int, index2: int):
+        self.swap(self.node(index1), self.node(index2))
